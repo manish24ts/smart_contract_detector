@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - Smart Contract Vulnerability Detector</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-light: #3b82f6;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --success: #10b981;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --card-border: #e2e8f0;
+            --dark-mode-bg: #0f172a;
+            --dark-mode-card: #1e293b;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+            line-height: 1.5;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 1rem 0;
+            margin-bottom: 2rem;
+        }
+        
+        header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        nav a {
+            color: white;
+            margin-left: 1.5rem;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        nav a:hover {
+            text-decoration: underline;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .card {
+            background-color: var(--card);
+            border-radius: 10px;
+            border: 1px solid var(--card-border);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        h1, h2, h3 {
+            margin-top: 0;
+            color: var(--text);
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding: 1.5rem 0;
+            color: var(--text-light);
+            font-size: 0.875rem;
+            border-top: 1px solid var(--card-border);
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .feature-card {
+            background-color: var(--card);
+            border-radius: 10px;
+            border: 1px solid var(--card-border);
+            padding: 1.5rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .feature-icon {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        
+        .vulnerability-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1.5rem;
+        }
+        
+        .vulnerability-table th,
+        .vulnerability-table td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--card-border);
+        }
+        
+        .vulnerability-table th {
+            background-color: rgba(37, 99, 235, 0.1);
+            font-weight: 500;
+        }
+        
+        .severity-high {
+            color: var(--danger);
+            font-weight: 500;
+        }
+        
+        .severity-medium {
+            color: var(--warning);
+            font-weight: 500;
+        }
+        
+        .severity-low {
+            color: var(--success);
+            font-weight: 500;
+        }
+        
+        .github-section {
+            margin-top: 3rem;
+            text-align: center;
+        }
+        
+        .github-button {
+            display: inline-block;
+            background-color: #24292e;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 500;
+            margin-top: 1rem;
+            transition: background-color 0.2s;
+        }
+        
+        .github-button:hover {
+            background-color: #000;
+        }
+        
+        .tech-stack {
+            margin-top: 3rem;
+        }
+        
+        .tech-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        
+        .tech-tag {
+            background-color: rgba(37, 99, 235, 0.1);
+            color: var(--primary);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        
+        .solution {
+            background-color: rgba(16, 185, 129, 0.05);
+            border-left: 4px solid var(--success);
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .card {
+                padding: 1.5rem;
+            }
+            
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">Smart Contract Vulnerability Detector</div>
+            <nav>
+                <a href="/">Home</a>
+                <a href="/about">About</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="card">
+            <h1>About Smart Contract Anomaly Detection</h1>
+            <p>The Smart Contract Vulnerability Detector is an AI-powered tool designed to automatically identify potential security issues and anomalies in Ethereum smart contracts. Our system analyzes contract code to detect irregular patterns that may indicate vulnerabilities before deployment.</p>
+            
+            <h2>How It Works</h2>
+            <p>Our anomaly detection system combines machine learning and code analysis techniques to identify potential security issues:</p>
+            
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🔍</div>
+                    <h3>Pattern Recognition</h3>
+                    <p>Identifies deviations from secure coding patterns by comparing contracts with a database of known secure implementations.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🤖</div>
+                    <h3>Machine Learning</h3>
+                    <p>Uses Random Forest classifiers trained on the SmartBugs dataset to detect anomalous code structures that could indicate vulnerabilities.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Risk Assessment</h3>
+                    <p>Assigns probability scores to detected anomalies to help developers prioritize which issues to address first.</p>
+                </div>
+            </div>
+            
+            <h2 style="margin-top: 3rem;">Common Smart Contract Vulnerabilities & Solutions</h2>
+            
+            <h3>1. Reentrancy</h3>
+            <p>Occurs when external contract calls allow attackers to recursively call back into the original contract before the first execution completes, potentially draining funds or manipulating state.</p>
+            
+            <div class="solution">
+                <h4>Solution:</h4>
+                <ul>
+                    <li>Use the checks-effects-interactions pattern</li>
+                    <li>Implement reentrancy guards with state locks</li>
+                    <li>Consider the OpenZeppelin ReentrancyGuard library</li>
+                </ul>
+                <pre><code>// Example of reentrancy guard
+modifier nonReentrant() {
+    require(!locked, "Reentrant call");
+    locked = true;
+    _;
+    locked = false;
+}</code></pre>
+            </div>
+            
+            <h3>2. Integer Overflow/Underflow</h3>
+            <p>Arithmetic operations that exceed the maximum or minimum size of the integer type can wrap around, leading to unexpected behavior in balance tracking or other calculations.</p>
+            
+            <div class="solution">
+                <h4>Solution:</h4>
+                <ul>
+                    <li>Use Solidity 0.8.0+ with built-in overflow checks</li>
+                    <li>For earlier versions, use SafeMath library</li>
+                    <li>Validate inputs and implement range checks</li>
+                </ul>
+            </div>
+            
+            <h3>3. Access Control Issues</h3>
+            <p>Missing or improper access controls can allow unauthorized users to execute sensitive functions or modify critical contract state.</p>
+            
+            <div class="solution">
+                <h4>Solution:</h4>
+                <ul>
+                    <li>Use explicit function modifiers for authorization</li>
+                    <li>Avoid tx.origin for authentication (use msg.sender)</li>
+                    <li>Implement role-based access control for complex systems</li>
+                </ul>
+                <pre><code>modifier onlyOwner() {
+    require(msg.sender == owner, "Not authorized");
+    _;
+}</code></pre>
+            </div>
+            
+            <h3>4. Unchecked External Calls</h3>
+            <p>Failing to check the return values from external contract calls can lead to silent failures and inconsistent contract state.</p>
+            
+            <div class="solution">
+                <h4>Solution:</h4>
+                <ul>
+                    <li>Always check return values from low-level calls</li>
+                    <li>Use require statements to validate successful execution</li>
+                    <li>Consider using the OpenZeppelin Address utility functions</li>
+                </ul>
+                <pre><code>(bool success, ) = recipient.call{value: amount}("");
+require(success, "Transfer failed");</code></pre>
+            </div>
+            
+            <h3>5. Timestamp Dependence</h3>
+            <p>Relying on block.timestamp for critical operations can be manipulated by miners within a certain range.</p>
+            
+            <div class="solution">
+                <h4>Solution:</h4>
+                <ul>
+                    <li>Avoid using timestamps for randomness</li>
+                    <li>Add reasonable timestamp tolerance windows</li>
+                    <li>Use block numbers for some time-sensitive operations</li>
+                </ul>
+            </div>
+            
+            <h3>6. Delegatecall Issues</h3>
+            <p>Insecure use of delegatecall can lead to unexpected behavior because it executes external code in the context of the calling contract.</p>
+            
+            <div class="solution">
+                <h4>Solution:</h4>
+                <ul>
+                    <li>Only delegatecall to trusted, verified contracts</li>
+                    <li>Carefully manage storage layout with proxy patterns</li>
+                    <li>Implement strict access controls on delegatecall usage</li>
+                </ul>
+            </div>
+            
+            <h3>7. Front-Running Vulnerability</h3>
+            <p>Transaction ordering can be exploited by observers who see pending transactions and insert their own transactions first.</p>
+            
+            <div class="solution">
+                <h4>Solution:</h4>
+                <ul>
+                    <li>Implement commit-reveal schemes</li>
+                    <li>Set maximum slippage parameters and deadlines</li>
+                    <li>Consider private transaction pools where appropriate</li>
+                </ul>
+            </div>
+            
+            <table class="vulnerability-table">
+                <thead>
+                    <tr>
+                        <th>Vulnerability</th>
+                        <th>Detection Method</th>
+                        <th>Severity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Reentrancy</td>
+                        <td>Control flow analysis, patterns of state changes after external calls</td>
+                        <td class="severity-high">High</td>
+                    </tr>
+                    <tr>
+                        <td>Integer Overflow</td>
+                        <td>Arithmetic operation analysis, bounds checking</td>
+                        <td class="severity-high">High</td>
+                    </tr>
+                    <tr>
+                        <td>Access Control</td>
+                        <td>Function modifier analysis, state variable access patterns</td>
+                        <td class="severity-high">High</td>
+                    </tr>
+                    <tr>
+                        <td>Unchecked Returns</td>
+                        <td>External call pattern analysis</td>
+                        <td class="severity-medium">Medium</td>
+                    </tr>
+                    <tr>
+                        <td>Timestamp Dependence</td>
+                        <td>Block properties usage analysis</td>
+                        <td class="severity-medium">Medium</td>
+                    </tr>
+                    <tr>
+                        <td>TX.Origin Usage</td>
+                        <td>Authentication pattern detection</td>
+                        <td class="severity-high">High</td>
+                    </tr>
+                    <tr>
+                        <td>Delegatecall Misuse</td>
+                        <td>Low-level call analysis</td>
+                        <td class="severity-high">High</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="tech-stack">
+                <h2>Technology Stack</h2>
+                <p>Our anomaly detection system is built with:</p>
+                
+                <div class="tech-tags">
+                    <span class="tech-tag">Python</span>
+                    <span class="tech-tag">Flask</span>
+                    <span class="tech-tag">scikit-learn</span>
+                    <span class="tech-tag">NumPy</span>
+                    <span class="tech-tag">Pandas</span>
+                    <span class="tech-tag">Solidity Parser</span>
+                </div>
+            </div>
+            
+            <div class="github-section">
+                <h2>Open Source Project</h2>
+                <p>Our smart contract anomaly detection tool is open source. Check out the repository to learn more or contribute.</p>
+                <a href="https://github.com/manish24ts/smart_contract_detector" class="github-button">View on GitHub</a>
+            </div>
+            
+            <h2 style="margin-top: 3rem;">Disclaimer</h2>
+            <p>This tool is provided as an aid for smart contract developers and auditors. While our system can detect many common vulnerabilities, it should not replace comprehensive security audits. False positives and false negatives are possible.</p>
+            <p>Always conduct thorough testing and consider professional security reviews before deploying smart contracts to production networks.</p>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <div class="container">
+            <p>Smart Contract Vulnerability Detector © 2025</p>
+            <p>A machine learning tool to analyze Ethereum smart contracts for potential security vulnerabilities.</p>
+        </div>
+    </div>
+</body>
+</html>

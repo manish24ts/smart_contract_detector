@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Contract Vulnerability Detector</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-solidity.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-light: #3b82f6;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --success: #10b981;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --card-border: #e2e8f0;
+            --dark-mode-bg: #0f172a;
+            --dark-mode-card: #1e293b;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+            line-height: 1.5;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 1rem 0;
+            margin-bottom: 2rem;
+        }
+        
+        header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        nav a {
+            color: white;
+            margin-left: 1.5rem;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        nav a:hover {
+            text-decoration: underline;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .card {
+            background-color: var(--card);
+            border-radius: 10px;
+            border: 1px solid var(--card-border);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        h1, h2, h3 {
+            margin-top: 0;
+            color: var(--text);
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--card-border);
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            margin-right: 5px;
+            border-bottom: 3px solid transparent;
+        }
+        
+        .tab.active {
+            border-bottom: 3px solid var(--primary);
+            font-weight: 500;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .file-drop-area {
+            border: 2px dashed var(--card-border);
+            border-radius: 5px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .file-drop-area:hover {
+            border-color: var(--primary-light);
+        }
+        
+        textarea {
+            width: 100%;
+            min-height: 300px;
+            border: 1px solid var(--card-border);
+            border-radius: 5px;
+            padding: 1rem;
+            font-family: monospace;
+            resize: vertical;
+        }
+        
+        .btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+        
+        .btn:hover {
+            background-color: var(--primary-light);
+        }
+        
+        .btn-secondary {
+            background-color: var(--text-light);
+        }
+        
+        .result-card {
+            display: none;
+            margin-top: 2rem;
+        }
+        
+        .vulnerability-badge {
+            display: inline-block;
+            border-radius: 50px;
+            padding: 0.35rem 0.75rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .badge-high {
+            background-color: rgba(239, 68, 68, 0.15);
+            color: var(--danger);
+        }
+        
+        .badge-medium {
+            background-color: rgba(245, 158, 11, 0.15);
+            color: var(--warning);
+        }
+        
+        .badge-low {
+            background-color: rgba(16, 185, 129, 0.15);
+            color: var(--success);
+        }
+        
+        .loader {
+            display: none;
+            border: 3px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 3px solid var(--primary);
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+            display: inline-block;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .result-summary {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .result-indicator {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            margin-right: 15px;
+        }
+        
+        .safe {
+            background-color: var(--success);
+        }
+        
+        .vulnerable {
+            background-color: var(--danger);
+        }
+
+        .code-preview {
+            font-family: monospace;
+            white-space: pre;
+            overflow-x: auto;
+            background-color: #f5f5f5;
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1.5rem;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding: 1.5rem 0;
+            color: var(--text-light);
+            font-size: 0.875rem;
+            border-top: 1px solid var(--card-border);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .card {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">Smart Contract Vulnerability Detector</div>
+            <nav>
+                <a href="/">Home</a>
+                <a href="/about">About</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="card">
+            <h1>Detect Vulnerabilities in Smart Contracts</h1>
+            <p>Upload a Solidity smart contract or paste your code to analyze for potential security vulnerabilities.</p>
+            
+            <div class="tabs">
+                <div class="tab active" data-tab="upload">Upload File</div>
+                <div class="tab" data-tab="paste">Paste Code</div>
+            </div>
+            
+            <div class="tab-content active" id="upload-tab">
+                <form id="upload-form">
+                    <div class="form-group">
+                        <div class="file-drop-area" id="drop-area">
+                            <p>Drag and drop your .sol file here</p>
+                            <p>or</p>
+                            <input type="file" id="file-upload" accept=".sol" style="display: none;">
+                            <button type="button" class="btn" id="select-file-btn">Select File</button>
+                            <p id="selected-file" style="margin-top: 10px; font-style: italic; display: none;"></p>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn" id="upload-btn">Analyze Contract</button>
+                    <span id="upload-loader" class="loader" style="display: none;"></span>
+                </form>
+            </div>
+            
+            <div class="tab-content" id="paste-tab">
+                <form id="paste-form">
+                    <div class="form-group">
+                        <label for="code-input">Solidity Code</label>
+                        <textarea id="code-input" placeholder="Paste your Solidity smart contract code here..."></textarea>
+                    </div>
+                    <button type="submit" class="btn" id="analyze-btn">Analyze Contract</button>
+                    <span id="paste-loader" class="loader" style="display: none;"></span>
+                </form>
+            </div>
+        </div>
+        
+        <div class="card result-card" id="result-card">
+            <h2>Analysis Results</h2>
+            
+            <div class="result-summary">
+                <div class="result-indicator" id="result-indicator"></div>
+                <h3 id="result-title">Contract Analysis</h3>
+            </div>
+            
+            <div>
+                <p><strong>Vulnerability Score:</strong> <span id="vulnerability-score"></span></p>
+                <p><strong>Severity:</strong> <span id="severity"></span></p>
+            </div>
+            
+            <div id="vulnerabilities-section" style="margin-top: 1.5rem;">
+                <h3>Detected Vulnerabilities</h3>
+                <div id="vulnerabilities-list"></div>
+            </div>
+            
+            <div id="code-section" style="margin-top: 1.5rem;">
+                <h3>Contract Code Preview</h3>
+                <pre><code class="language-solidity" id="code-preview"></code></pre>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <div class="container">
+            <p>Smart Contract Vulnerability Detector © 2025</p>
+            <p>A machine learning tool to analyze Ethereum smart contracts for potential security vulnerabilities.</p>
+        </div>
+    </div>
+
+    <script>
+        // Variable to store file content
+        let currentFileContent = '';
+        
+        // Tab switching
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                
+                tab.classList.add('active');
+                document.getElementById(`${tab.dataset.tab}-tab`).classList.add('active');
+            });
+        });
+        
+        // File upload handling
+        const dropArea = document.getElementById('drop-area');
+        const fileInput = document.getElementById('file-upload');
+        const selectFileBtn = document.getElementById('select-file-btn');
+        const selectedFileText = document.getElementById('selected-file');
+        
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, preventDefaults, false);
+        });
+        
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropArea.addEventListener(eventName, highlight, false);
+        });
+        
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, unhighlight, false);
+        });
+        
+        function highlight() {
+            dropArea.style.borderColor = 'var(--primary)';
+        }
+        
+        function unhighlight() {
+            dropArea.style.borderColor = 'var(--card-border)';
+        }
+        
+        dropArea.addEventListener('drop', handleDrop, false);
+        
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            handleFiles(files);
+        }
+        
+        function handleFiles(files) {
+            if (files.length > 0) {
+                const file = files[0];
+                if (file.name.endsWith('.sol')) {
+                    fileInput.files = files;
+                    selectedFileText.textContent = `Selected: ${file.name}`;
+                    selectedFileText.style.display = 'block';
+                    
+                    // Read file content
+                    readFileContent(file);
+                } else {
+                    alert('Please select a .sol file');
+                }
+            }
+        }
+        
+        // Function to read file content
+        function readFileContent(file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                currentFileContent = e.target.result;
+            };
+            reader.readAsText(file);
+        }
+        
+        selectFileBtn.addEventListener('click', () => {
+            fileInput.click();
+        });
+        
+        fileInput.addEventListener('change', () => {
+            if (fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                selectedFileText.textContent = `Selected: ${file.name}`;
+                selectedFileText.style.display = 'block';
+                
+                // Read file content
+                readFileContent(file);
+            }
+        });
+        
+        // Form submission
+        document.getElementById('upload-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (!fileInput.files.length) {
+                alert('Please select a .sol file');
+                return;
+            }
+            
+            const uploadLoader = document.getElementById('upload-loader');
+            uploadLoader.style.display = 'inline-block';
+            
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+            
+            // Also append the file content to ensure it's available for analysis
+            formData.append('fileContent', currentFileContent);
+            
+            fetch('/analyze', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                displayResults(data, fileInput.files[0].name);
+                uploadLoader.style.display = 'none';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred during analysis');
+                uploadLoader.style.display = 'none';
+            });
+        });
+        
+        document.getElementById('paste-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const codeInput = document.getElementById('code-input');
+            if (!codeInput.value.trim()) {
+                alert('Please paste your Solidity code');
+                return;
+            }
+            
+            const pasteLoader = document.getElementById('paste-loader');
+            pasteLoader.style.display = 'inline-block';
+            
+            const formData = new FormData();
+            formData.append('code', codeInput.value);
+            
+            fetch('/analyze', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                displayResults(data, 'Pasted Code');
+                pasteLoader.style.display = 'none';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred during analysis');
+                pasteLoader.style.display = 'none';
+            });
+        });
+        
+        function displayResults(data, filename) {
+            const resultCard = document.getElementById('result-card');
+            const resultIndicator = document.getElementById('result-indicator');
+            const resultTitle = document.getElementById('result-title');
+            const vulnerabilityScore = document.getElementById('vulnerability-score');
+            const severity = document.getElementById('severity');
+            const vulnerabilitiesList = document.getElementById('vulnerabilities-list');
+            const codePreview = document.getElementById('code-preview');
+            
+            // Display the result card
+            resultCard.style.display = 'block';
+            
+            // Update result indicator and title
+            if (data.is_vulnerable) {
+                resultIndicator.className = 'result-indicator vulnerable';
+                resultTitle.textContent = 'Vulnerable Contract Detected';
+            } else {
+                resultIndicator.className = 'result-indicator safe';
+                resultTitle.textContent = 'Contract Appears Safe';
+            }
+            
+            // Update vulnerability score
+            vulnerabilityScore.textContent = `${(data.vulnerability_probability * 100).toFixed(1)}%`;
+            
+            // Update severity
+            severity.textContent = data.severity;
+            
+            // Update vulnerabilities list
+            vulnerabilitiesList.innerHTML = '';
+            if (data.potential_vulnerabilities && data.potential_vulnerabilities.length > 0) {
+                data.potential_vulnerabilities.forEach(vuln => {
+                    const badge = document.createElement('span');
+                    badge.className = `vulnerability-badge badge-${data.severity.toLowerCase()}`;
+                    badge.textContent = vuln.replace(/_/g, ' ');
+                    vulnerabilitiesList.appendChild(badge);
+                });
+            } else {
+                vulnerabilitiesList.innerHTML = '<p>No specific vulnerabilities detected.</p>';
+            }
+            
+            // Update code preview
+            if (document.querySelector('.tab.active').dataset.tab === 'paste') {
+                codePreview.textContent = document.getElementById('code-input').value;
+            } else {
+                // Display the actual file content instead of just the filename
+                codePreview.textContent = currentFileContent || `// File content not available for ${filename}`;
+            }
+            
+            // Highlight code
+            Prism.highlightElement(codePreview);
+            
+            // Scroll to results
+            resultCard.scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
