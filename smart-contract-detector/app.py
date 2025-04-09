@@ -5,7 +5,8 @@ from werkzeug.utils import secure_filename
 import tempfile
 from smart_contract_detector import SmartContractVulnerabilityDetector
 
-app = Flask(__name__, template_folder='.')
+# Proper initialization of Flask with correct template and static folders
+app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max upload
 app.config['UPLOAD_FOLDER'] = tempfile.gettempdir()
 
@@ -22,7 +23,7 @@ except:
 
 @app.route('/')
 def index():
-    return render_template('./templates/index.html')
+    return render_template('index.html')
 
 @app.route('/analyze', methods=['POST'])
 def analyze_contract():
@@ -56,8 +57,9 @@ def analyze_contract():
 
 @app.route('/about')
 def about():
-    return render_template('./templates/about.html')
+    return render_template('about.html')
 
 if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 10000))  # Fallback to 10000 if PORT is not set
-    app.run(host='0.0.0.0', port=port)
+    # Get port from environment variable for Render
+    port = int(os.environ.get("PORT", 5000))
+    app.run(debug=False, host='0.0.0.0', port=port)
