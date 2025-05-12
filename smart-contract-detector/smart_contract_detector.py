@@ -1,23 +1,18 @@
 import os
 import re
-import sys
 import numpy as np
 import pandas as pd
-from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
+from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report, confusion_matrix
-from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import StandardScaler
-from sklearn.compose import ColumnTransformer
 import joblib
 import argparse
 import json
 import glob
 
 class SmartContractVulnerabilityDetector:
-    def __init__(self, smartbugs_repo_path=None):
-        self.smartbugs_repo_path = smartbugs_repo_path
+    def __init__(self):
         self.model = None
         self.vectorizer = None
         self.feature_names = []
@@ -136,52 +131,8 @@ class SmartContractVulnerabilityDetector:
         return features
     
     def load_sample_data(self):
-        """Load and prepare sample data from SmartBugs repository with improved balancing"""
-        if not self.smartbugs_repo_path or not os.path.exists(self.smartbugs_repo_path):
-            print(f"SmartBugs repo path not found. Using enhanced synthetic data.")
-            return self._create_enhanced_synthetic_dataset()
-            
-        # In a real implementation, we would load and process the dataset from SmartBugs
-        contracts_data = []
+        return self._create_enhanced_synthetic_dataset()
         
-        # Process vulnerable contracts
-        vulnerabilities_path = os.path.join(self.smartbugs_repo_path, "dataset")
-        for vuln_type in os.listdir(vulnerabilities_path):
-            vuln_dir = os.path.join(vulnerabilities_path, vuln_type)
-            if os.path.isdir(vuln_dir):
-                for contract_file in glob.glob(os.path.join(vuln_dir, "**/*.sol"), recursive=True):
-                    try:
-                        with open(contract_file, 'r', encoding='utf-8') as f:
-                            code = f.read()
-                            features = self.extract_features_from_contract(code)
-                            features['code_text'] = code
-                            features['is_vulnerable'] = 1
-                            features['vulnerability_type'] = vuln_type
-                            contracts_data.append(features)
-                    except Exception as e:
-                        print(f"Error processing {contract_file}: {e}")
-        
-        # Process non-vulnerable contracts
-        safe_contracts_path = os.path.join(self.smartbugs_repo_path, "safe_contracts")
-        if os.path.exists(safe_contracts_path):
-            for contract_file in glob.glob(os.path.join(safe_contracts_path, "**/*.sol"), recursive=True):
-                try:
-                    with open(contract_file, 'r', encoding='utf-8') as f:
-                        code = f.read()
-                        features = self.extract_features_from_contract(code)
-                        features['code_text'] = code
-                        features['is_vulnerable'] = 0
-                        features['vulnerability_type'] = 'none'
-                        contracts_data.append(features)
-                except Exception as e:
-                    print(f"Error processing {contract_file}: {e}")
-        
-        df = pd.DataFrame(contracts_data)
-        
-        # Store feature names for later use
-        self.feature_names = [col for col in df.columns if col not in ['code_text', 'is_vulnerable', 'vulnerability_type']]
-        
-        return df
     
     def _create_enhanced_synthetic_dataset(self):
         """Create an enhanced synthetic dataset with clear distinction between vulnerable and secure contracts"""
@@ -747,14 +698,13 @@ class SmartContractVulnerabilityDetector:
 def main():
     parser = argparse.ArgumentParser(description='Smart Contract Vulnerability Detector')
     parser.add_argument('--contract', type=str, help='Path to smart contract (.sol) file')
-    parser.add_argument('--repo', type=str, help='Path to SmartBugs repository (optional)')
     parser.add_argument('--train', action='store_true', help='Train a new model')
     parser.add_argument('--save', action='store_true', help='Save the trained model')
     parser.add_argument('--detailed', action='store_true', help='Show detailed vulnerability analysis')
     
     args = parser.parse_args()
     
-    detector = SmartContractVulnerabilityDetector(args.repo)
+    detector = SmartContractVulnerabilityDetector()
     
     if args.train:
         detector.train_model()
